@@ -22,3 +22,25 @@ with col4:
 with col5:
     mortgage_length = st.number_input("mortgage in year", value=30)
     st.write("The mortgage year ", mortgage_length, " years")
+
+
+# Calculate the years which are x-axis numbers.
+x = [start_year + i for i in range(mortgage_length)]
+y = [original_debt]
+
+# Calculate new year mortgage balance based on last year data
+for i in range(1, mortgage_length):
+    last_year_index = i - 1
+    base = y[last_year_index]
+    balance = base * (1 + (interest_rate * 0.01)) - payment * 12
+    y.append(balance)
+
+import pandas as pd
+df = pd.DataFrame({
+    "year": x,
+    "balance": y,
+})
+
+import plotly.express as px
+fig = px.bar(df, x="year", y="balance", color='balance')
+st.plotly_chart(fig, use_container_width=True)
